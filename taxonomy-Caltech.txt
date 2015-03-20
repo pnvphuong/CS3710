@@ -1,4 +1,4 @@
-**animal
+animal
 	air
 		114.ibis-101
 		100.hawksbill-101
