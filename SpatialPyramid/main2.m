@@ -1,7 +1,8 @@
 % add path
 addpath(genpath('classifier')); % add classifier
 addpath(genpath('taxonomy')); % add taxonomy
-image_dir = 'D:/datasets/256_ObjectCategories';
+% image_dir = 'D:/datasets/256_ObjectCategories';
+image_dir = 'E:\nineil\phd\general_datasets\256_ObjectCategories';
 data_dir = 'data';
 
 load('caltechTaxonomy.mat');
