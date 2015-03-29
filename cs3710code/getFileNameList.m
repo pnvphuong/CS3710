@@ -1,6 +1,6 @@
 function fnList = getFileNameList(folderList)
     fnList = {};
-    for i = 1 : length(folderList)        
+    for i = 1 : length(folderList)
         dirData = dir(folderList{i});
         dirIndex = [dirData.isdir];  %# Find the index for directories
         fileList = {dirData(~dirIndex).name}';  %'# Get a list of the files
