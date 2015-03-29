@@ -1,8 +1,11 @@
-function confusionMatrixList = oneVSAll(categoryList, taxonomyMap,...
-        dsFeatureTable, baseFolder, trainTestRatio)    
-    confusionMatrixList = cell(length(categoryList));
+function confusionMatrixMap = oneVSAll(categoryList, taxonomyMap,...
+        dsFeatureTable, baseFolder, trainTestRatio)
+    
+    confusionMatrixList = cell(length(categoryList),1);
+    classifierNameList = cell(length(confusionMatrixList),1);
     for i = 1 : length(categoryList)
-        sprintf('%s vs others', categoryList{i});
+        sprintf('%s vs others', categoryList{i})
+        classifierNameList{i} = sprintf('%s vs others', categoryList{i});        
         % get pos and neg category names
         posCategoryList = cell(1);
         posCategoryList{1} = categoryList{i};        
@@ -14,8 +17,9 @@ function confusionMatrixList = oneVSAll(categoryList, taxonomyMap,...
                 dsFeatureTable, baseFolder);        
         % evaluate model
         confusionMatrixList{i} = binaryClassifier(posFeatureList, negFeatureList,...
-            trainTestRatio);
+            trainTestRatio);        
     end
+    confusionMatrixMap = containers.Map(classifierNameList, confusionMatrixList);    
 end
 
 function otherCategoryList = getOtherCategoryList(categoryList, category)

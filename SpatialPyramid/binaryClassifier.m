@@ -1,5 +1,6 @@
 function confusionMatrix = binaryClassifier(posFeatureTable, negFeatureTable,...
         trainTestRatio)
+    sprintf('pos: %d instances vs neg: %d instance', size(posFeatureTable,1), size(negFeatureTable,1))
     % create class data, i.e. 1, -1
     posClassStr = repmat({'1'},1,size(posFeatureTable,1));
     posClassNum = repmat(1,1,size(posFeatureTable,1));    
@@ -9,14 +10,12 @@ function confusionMatrix = binaryClassifier(posFeatureTable, negFeatureTable,...
     classes_tot = [posClassStr negClassStr];
     dataClass = [posClassNum negClassNum];
     featureTable = [posFeatureTable; negFeatureTable];
+
     % get train, test idx
     [trainIdx, testIdx] = crossvalind('holdout',classes_tot,trainTestRatio, ...
                'Classes',{'-1','1'});
     trainClass = dataClass(trainIdx)';
     testClass = dataClass(testIdx)';
-    posCount = testClass == 1;
-    sum(posCount)
-    length(posCount) - sum(posCount)
     numTrain = size(trainClass,1);
     numTest = size(testClass,1);
     pyramid_train = featureTable(trainIdx, :);    
@@ -30,9 +29,15 @@ function confusionMatrix = binaryClassifier(posFeatureTable, negFeatureTable,...
     
     % train and test
     model = svmtrain(trainClass, K, '-t 4');
-    [predClass, acc, decVals] = svmpredict(testClass, KK, model);
-    acc
+    [predClass, acc, decVals] = svmpredict(testClass, KK, model);   
     
-    % confusion matrix
-    confusionMatrix = confusionmat(testClass,predClass)
+    % confusion matrix        
+    confusionMatrix = confusionmat(testClass,predClass);
+    sprintf('precision = %f',getPrecision(testClass,predClass,1))
+end
+
+function precision = getPrecision(testClass,predClass,classValue)
+    predValueClass = predClass == classValue;
+    testValueClass = testClass == classValue;
+    precision = sum(predValueClass & testValueClass) / length(testClass);
 end
