@@ -1,0 +1,33 @@
+%% run one vs all experiment
+addpath(genpath('classifier')); % add classifier
+addpath(genpath('taxonomy')); % add taxonomy
+addpath(genpath('../data'));
+
+load('caltechTaxonomy.mat');
+%% use table object
+% load('feat_data.mat');
+% use map object
+load('feat_map.mat');
+featureTableMap = dataMap;
+baseFolder = '../data/256_ObjectCategories';
+trainTestRatio = 0.3;
+
+% full list of leaf node in the Animal tree
+categoryList = {'ibis', 'hawksbill', 'hummingbird', 'cormorant', 'duck', ...
+    'goose', 'ostrich', 'owl', 'penguin', 'swan', ...
+    'bat', 'bear', 'camel', 'chimp', 'dog', 'elephant', ...
+    'elk', 'frog', 'giraffe', 'goat', 'gorilla', ...
+    'horse', 'iguana', 'kangaroo', 'llama', ...
+    'leopards', 'porcupine', 'raccoon', 'skunk', ...
+    'snake', 'snail', 'zebra', 'greyhound', 'toad', ...
+    'horseshoe-crab', 'crab', 'conch', 'dolphin', ...
+    'goldfish', 'killer-whale', 'mussels', 'octopus', 'starfish'};
+
+%% use table object
+% confusionMatrixList = oneVSAll(categoryList, caltechTaxonomyMap,...
+%         TF, baseFolder, trainTestRatio)
+% use map object
+confusionMatrixMap = oneVSAll(categoryList, caltechTaxonomyMap,...
+        featureTableMap, baseFolder, trainTestRatio);
+% save result
+save('../data/1vsAll.mat', 'confusionMatrixMap');
