@@ -1,6 +1,7 @@
 % function tax2features(tax, feat_folder)
 
 % init data
+addpath(genpath('taxonomy'));
 warning('off','all'); % supress all warning messages
 load('caltechTaxonomy.mat');
 tax = caltechTaxonomyMap;
@@ -13,10 +14,11 @@ if exist(feat_folder, 'dir')~=7
 end
 
 % TODO: verify if it is ok to generate at once all features or should they
-% be separated at train and test phases
+% be separated at train and test phases [VERIFIED]. It is ok to generate
+% all features at once
 
 % TODO: verify if when buildPyramid should be all classes together or could
-% be one by one
+% be one by one [VERIFIED], any case is ok. See reports of main3.m
 
 v = values(tax);
 TF = [];
