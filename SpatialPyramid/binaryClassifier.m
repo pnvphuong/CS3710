@@ -4,7 +4,7 @@ function confusionMatrix = binaryClassifier(posFeatureTable, negFeatureTable,...
     % create class data, i.e. 1, -1
     posClassStr = repmat({'1'},1,size(posFeatureTable,1));
     posClassNum = repmat(1,1,size(posFeatureTable,1));    
-    negClassStr = repmat({'1'},1,size(negFeatureTable,1));
+    negClassStr = repmat({'-1'},1,size(negFeatureTable,1));
     negClassNum = repmat(-1,1,size(negFeatureTable,1));
     % create total data
     classes_tot = [posClassStr negClassStr];
@@ -29,11 +29,11 @@ function confusionMatrix = binaryClassifier(posFeatureTable, negFeatureTable,...
     
     % train and test
     model = svmtrain(trainClass, K, '-t 4');
-    [predClass, acc, decVals] = svmpredict(testClass, KK, model);   
+    % [predClass, acc, decVals] = svmpredict(testClass, KK, model);   
     
     % confusion matrix        
-    confusionMatrix = confusionmat(testClass,predClass);
-    sprintf('precision = %f',getPrecision(testClass,predClass,1))
+    % confusionMatrix = confusionmat(testClass,predClass);
+    % sprintf('precision = %f',getPrecision(testClass,predClass,1))
 end
 
 function precision = getPrecision(testClass,predClass,classValue)
