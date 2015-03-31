@@ -23,14 +23,29 @@ categoryList = {'ibis', 'hawksbill', 'hummingbird', 'cormorant', 'duck', ...
     'snake', 'snail', 'zebra', 'greyhound', 'toad', ...
     'horseshoe-crab', 'crab', 'conch', 'dolphin', ...
     'goldfish', 'killer-whale', 'mussels', 'octopus', 'starfish'};
-categoryList = {'ibis', 'hawksbill', 'hummingbird'};
+% categoryList = {'ibis', 'hawksbill', 'hummingbird'};
 
+evaluationTable = cell(1,epoch);
+accList = zeros(1, epoch);
 for iRun = 1 : epoch
+	disp(sprintf('run %d', iRun))
 	% set seed random number
 	rng(iRun);
 	% extract train, test set
+	disp(sprintf('\textract train, test sets'))
 	[trainIDList, testIDList] = extractTrainTestList(categoryList, caltechTaxonomyMap,...
 							trainTestRatio, baseFolder);
-
-	classifierList = buildLeafNodeClassifierList(trainIDList, featureMap);
+	% compute kernel, and get id (filename) of train set, test set
+	disp(sprintf('\tcompute kernels'))
+	[K, KK, trainID, testID] = computeKernel(trainIDList, testIDList, featureMap);
+	% build classifier list
+	disp(sprintf('\ttrain classifier list'))
+	classifierList = buildLeafNodeClassifierList(K, trainIDList);
+	% predict
+	disp(sprintf('\tevaluate classifier list'))
+	evaluationTable{iRun} = predictLeafNodeClassifierList(KK, testID, testIDList, classifierList);	
+	accList(iRun) = getPerformance(evaluationTable{iRun});
+	save('../data/evaluationTable.mat', 'evaluationTable');
 end
+save('../data/accList.mat', 'accList');
+disp(sprintf('Avg acc = %f', sum(accList) / epoch))

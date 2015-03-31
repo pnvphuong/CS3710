@@ -1,31 +1,23 @@
-function classifierList = buildLeafNodeClassifierList(trainIDList, featureMap)
+function classifierList = buildLeafNodeClassifierList(K, trainIDList)
 	classifierList = cell(1, length(trainIDList));
 
 	for iCategory = 1 : length(trainIDList)
-		% extract positive feature
-		posIDList = cellstr(trainIDList{iCategory});
-		posFeatureList = getFeatureFromID(featureMap, posIDList);
-		% extract negative feature
-		negIDList = cellstr(getNegIDList(trainIDList, iCategory));
-		negFeatureList = getFeatureFromID(featureMap, negIDList);
+		% build class value list
+		classValue = getClassValue(trainIDList, iCategory);
 		% build classifier
-		classifierList{iCategory} = buildBinaryClassifier(posFeatureList, negFeatureList);
+		classifierList{iCategory} = buildBinaryClassifier(K, classValue);
 	end
 end
 
-function negIDList = getNegIDList(trainIDList, iCategory)
-	negIDList = [];
+function classValue = getClassValue(trainIDList, iCategory)
+	classValue = [];
 	for i = 1 : length(trainIDList)
-		if i == iCategory
-			continue;
-        end
-        negIDList = [negIDList; trainIDList{i}];
-    end
-end
+		categoryClassValue = ones(length(trainIDList{i}),1);
+		if i ~= iCategory
+			% negative class
+			categoryClassValue = categoryClassValue .* -1;
+		end
 
-function featureList = getFeatureFromID(featureMap, idList)
-	featureList = [];
-	for i = 1 : length(idList)
-		featureList = [featureList; featureMap(idList{i})];
+		classValue = [classValue; categoryClassValue];
 	end
 end
