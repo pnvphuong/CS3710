@@ -8,7 +8,7 @@ load('caltechTaxonomy.mat');
 % load('feat_data.mat');
 % use map object
 load('feat_map.mat');
-featureTableMap = dataMap;
+featureMap = dataMap;
 baseFolder = '../data/256_ObjectCategories';
 trainTestRatio = 0.3;
 epoch = 1;
@@ -23,14 +23,14 @@ categoryList = {'ibis', 'hawksbill', 'hummingbird', 'cormorant', 'duck', ...
     'snake', 'snail', 'zebra', 'greyhound', 'toad', ...
     'horseshoe-crab', 'crab', 'conch', 'dolphin', ...
     'goldfish', 'killer-whale', 'mussels', 'octopus', 'starfish'};
-categoryList = {'ibis', 'hawksbill'};
+categoryList = {'ibis', 'hawksbill', 'hummingbird'};
 
 for iRun = 1 : epoch
 	% set seed random number
 	rng(iRun);
 	% extract train, test set
 	[trainIDList, testIDList] = extractTrainTestList(categoryList, caltechTaxonomyMap,...
-							featureTableMap, trainTestRatio, baseFolder);
+							trainTestRatio, baseFolder);
 
-	classifierList = 
+	classifierList = buildLeafNodeClassifierList(trainIDList, featureMap);
 end

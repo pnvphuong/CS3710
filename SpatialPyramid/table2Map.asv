@@ -1,4 +1,0 @@
-function dataMap = table2Map(dataTable, fn)
-    C = table2cell(dataTable)
-    C.
-end

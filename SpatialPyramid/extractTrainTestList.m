@@ -1,6 +1,5 @@
 function [trainIDList, testIDList] = extractTrainTestList(categoryList,...
-							taxonomyMap, featureTableMap, trainTestRatio,...
-							baseFolder)
+							taxonomyMap, trainTestRatio, baseFolder)
 	trainIDList = cell(1, length(categoryList));
 	testIDList = cell(1, length(categoryList));
 
