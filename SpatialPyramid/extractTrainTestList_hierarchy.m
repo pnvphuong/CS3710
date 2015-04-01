@@ -1,7 +1,10 @@
-function [trainIDList, testIDList] = extractTrainTestList(categoryList,...
+function [trainIDList, testIDList] = extractTrainTestList_hierarchy(categoryList,...
 							taxonomyMap, trainTestRatio, baseFolder)
-	trainIDList = cell(1, length(categoryList));
+                        
+    trainIDList = cell(1, length(categoryList));
 	testIDList = cell(1, length(categoryList));
+    
+    v = key2categories(k, taxonomyMap)
 
 	for iCategory = 1 : length(categoryList)
 		% retrieve all IDs (filenames) of this category
