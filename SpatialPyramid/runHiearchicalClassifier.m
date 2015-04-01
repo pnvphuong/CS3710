@@ -45,18 +45,26 @@ for iRun = 1 : epoch
     
 	% extract train, test set
 	fprintf('\textract train, test sets');
-	[trainIDList, testIDList] = extractTrainTestList_hierarchy(categoryList, caltechTaxonomyMap,...
-							trainTestRatio, baseFolder);
+    map_IDList = extractTrainTestList_hierarchy('animal', tax2, trainTestRatio, baseFolder, '   ');
+    
+    % refine hierarchy
+    fprintf('\trefine hierarchy');
+    refined_IDList = refineMap_IDList(map_IDList, tax2 );
                         
 	% compute kernel, and get id (filename) of train set, test set
 	disp(sprintf('\tcompute kernels'))
-	[K, KK, trainID, testID] = computeKernel(trainIDList, testIDList, featureMap);
+    map_kernels = computeKernel_hierarchy( refined_IDList, featureMap);
+    
 	% build classifier list
 	disp(sprintf('\ttrain classifier list'))
-	classifierList = buildLeafNodeClassifierList(K, trainIDList);
+	map_learned_models = buildClassifierHierarchy( map_kernels, refined_IDList);
+    
 	% predict
 	disp(sprintf('\tevaluate classifier list'))
-	evaluationTable{iRun} = predictLeafNodeClassifierList(KK, testID, testIDList, classifierList);	
+    map_predictions = predictClassifierHierarchy( map_kernels, refined_IDList, map_learned_models);
+	% evaluationTable{iRun} = predictLeafNodeClassifierList(KK, testID, testIDList, classifierList);
+    
+    % evaluation
 	accList(iRun) = getPerformance(evaluationTable{iRun});
 	save('../data/evaluationTable.mat', 'evaluationTable');
 end

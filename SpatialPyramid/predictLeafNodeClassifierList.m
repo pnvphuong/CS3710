@@ -32,7 +32,7 @@ function tieBreakVector = tieBreaker(inputVector)
 			for j = 1 : length(tieBreakVector(i,:))
 				if tieBreakVector(i,length(tieBreakVector(i,:)) - j + 1) ~= 0
 					tieBreakVector(i,length(tieBreakVector(i,:)) - j + 1) = 0;
-					rowSum = rowSum - 1
+					rowSum = rowSum - 1;
 					if rowSum == 1
 						break;
 					end

@@ -34,8 +34,8 @@ function map_IDList = extractTrainTestList_hierarchy(rootName, taxonomyMap, trai
             % fprintf(' %s child: %s\n', str, child)
             MR = extractTrainTestList_hierarchy(child, taxonomyMap, trainTestRatio, baseFolder, [str '   ']);
             child_train_test = MR(child);
-            trainIDList = [trainIDList; child_train_test{1}];
-            testIDList = [testIDList;  child_train_test{2}];
+            trainIDList = [trainIDList child_train_test(1)];
+            testIDList = [testIDList  child_train_test(2)];
             TS = [TS; MR];
         end
         TS(rootName) = { trainIDList, testIDList };

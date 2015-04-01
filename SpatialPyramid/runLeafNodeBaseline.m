@@ -25,6 +25,7 @@ epoch = 1; % 40
 %     'horseshoe-crab', 'crab', 'conch', 'dolphin', ...
 %     'goldfish', 'killer-whale', 'mussels', 'octopus', 'starfish'};
 categoryList = {'ibis', 'hawksbill', 'hummingbird'};
+% categoryList = {'ibis', 'hawksbill'};
 
 evaluationTable = cell(1,epoch);
 accList = zeros(1, epoch);
@@ -36,12 +37,13 @@ for iRun = 1 : epoch
 	disp(sprintf('\textract train, test sets'))
 	[trainIDList, testIDList] = extractTrainTestList(categoryList, caltechTaxonomyMap,...
 							trainTestRatio, baseFolder);
+    trainIDList
 	% compute kernel, and get id (filename) of train set, test set
 	disp(sprintf('\tcompute kernels'))
 	[K, KK, trainID, testID] = computeKernel(trainIDList, testIDList, featureMap);
 	% build classifier list
 	disp(sprintf('\ttrain classifier list'))
-	classifierList = buildLeafNodeClassifierList(K, trainIDList);
+	classifierList = buildLeafNodeClassifierList(K, trainIDList)
 	% predict
 	disp(sprintf('\tevaluate classifier list'))
 	evaluationTable{iRun} = predictLeafNodeClassifierList(KK, testID, testIDList, classifierList);	
