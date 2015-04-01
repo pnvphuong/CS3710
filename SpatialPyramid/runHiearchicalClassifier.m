@@ -10,8 +10,10 @@ tax = caltechTaxonomyMap;
 % use map object
 load('feat_map.mat');
 featureMap = dataMap;
-% baseFolder = '../data/256_ObjectCategories';
-baseFolder = 'D:\datasets\256_ObjectCategories';
+% baseFolder = '../data/256_ObjectCategories'; % phuong
+% baseFolder = 'D:\datasets\256_ObjectCategories'; % Nils PC
+% baseFolder = '/afs/cs.pitt.edu/usr0/nineil/private/datasets/256_ObjectCategories'; % Nils Server
+baseFolder = 'E:\nineil\phd\general_datasets\256_ObjectCategories'; % Nils PC Lab
 trainTestRatio = 0.3;
 epoch = 1;
 
