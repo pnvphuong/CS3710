@@ -11,7 +11,7 @@ load('feat_map.mat');
 featureMap = dataMap;
 baseFolder = '../data/256_ObjectCategories';
 trainTestRatio = 0.3;
-epoch = 1;
+epoch = 40;
 
 % full list of leaf node in the Animal tree
 categoryList = {'ibis', 'hawksbill', 'hummingbird', 'cormorant', 'duck', ...

@@ -29,7 +29,7 @@ function tieBreakVector = tieBreaker(inputVector)
 	for i = 1 : size(tieBreakVector,1)
 		rowSum = sum(tieBreakVector(i,:));
 		if  rowSum > 1
-			for j = 1 : length(Z(i,:))
+			for j = 1 : length(tieBreakVector(i,:))
 				if tieBreakVector(i,length(tieBreakVector(i,:)) - j + 1) ~= 0
 					tieBreakVector(i,length(tieBreakVector(i,:)) - j + 1) = 0;
 					rowSum = rowSum - 1
