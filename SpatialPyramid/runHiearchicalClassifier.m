@@ -10,11 +10,11 @@ load('caltechTaxonomy.mat');
 load('feat_map.mat');
 featureMap = dataMap;
 % baseFolder = '../data/256_ObjectCategories'; % phuong
-baseFolder = 'D:\datasets\256_ObjectCategories'; % Nils PC
-% baseFolder = '/afs/cs.pitt.edu/usr0/nineil/private/datasets/256_ObjectCategories'; % Nils Server
+% baseFolder = 'D:\datasets\256_ObjectCategories'; % Nils PC
+baseFolder = '/afs/cs.pitt.edu/usr0/nineil/private/datasets/256_ObjectCategories'; % Nils Server
 % baseFolder = 'E:\nineil\phd\general_datasets\256_ObjectCategories'; % Nils PC Lab
 trainTestRatio = 0.3;
-epoch = 1;
+epoch = 40;
 
 % full list of leaf node in the Animal tree
 categoryList = {'ibis', 'hawksbill', 'hummingbird', 'cormorant', 'duck', ...
@@ -61,8 +61,8 @@ for iRun = 1 : epoch
 	map_learned_models = buildClassifierHierarchy( map_kernels, refined_IDList);
     
 	% predict
-	fprintf('\tevaluate classifier list');
-    r = map_IDList('animal');
+	fprintf('\tevaluate classifier list\n');
+    r = refined_IDList('animal');
     predictions = predictClassifierHierarchy('animal', map_kernels, r{2}, map_learned_models, featureMap, tax);
     % map_predictions = predictClassifierHierarchy( map_kernels, refined_IDList, map_learned_models);
 	% evaluationTable{iRun} = predictLeafNodeClassifierList(KK, testID, testIDList, classifierList);
@@ -70,7 +70,7 @@ for iRun = 1 : epoch
     size(predictions)
     
     % get ground truths,
-    gt = getGroundTruth( r{2} , categoryList);
+    gt = getGroundTruth_manual(r{2});
     disp('Size GroundTruth:')
     size(gt)
     

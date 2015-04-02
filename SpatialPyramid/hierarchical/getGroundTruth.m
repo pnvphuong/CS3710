@@ -1,5 +1,8 @@
 % r = map_IDList('animal');
 % getGroundTruth( r{2} , categoryList)
+
+% TODO: have problems when two names are similar, e.g. horse and horse-crab
+% in test_instances
 function vg = getGroundTruth( test_instances , leaves)
 vg = {};
 for i = 1: length(test_instances) % number of classes
