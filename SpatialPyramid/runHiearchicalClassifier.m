@@ -33,8 +33,8 @@ valueSet = {{'air', 'land'}, {'ibis', 'hawksbill'}, {'bat', 'bear'}, ...
             '114.ibis-101', '100.hawksbill-101', '007.bat', '009.bear'};
 tax2 = containers.Map(keySet,valueSet);
 
-tax = tax2;
-% tax = caltechTaxonomyMap;
+% tax = tax2;
+tax = caltechTaxonomyMap;
 
 evaluationTableHierar = cell(1,epoch);
 accList = zeros(1, epoch);
@@ -63,12 +63,16 @@ for iRun = 1 : epoch
 	% predict
 	fprintf('\tevaluate classifier list');
     r = map_IDList('animal');
-    predictions = predictClassifierHierarchy('animal', map_kernels, r{2}, map_learned_models, featureMap, tax2);
+    predictions = predictClassifierHierarchy('animal', map_kernels, r{2}, map_learned_models, featureMap, tax);
     % map_predictions = predictClassifierHierarchy( map_kernels, refined_IDList, map_learned_models);
 	% evaluationTable{iRun} = predictLeafNodeClassifierList(KK, testID, testIDList, classifierList);
+    disp('Size Predictions:')
+    size(predictions)
     
     % get ground truths,
     gt = getGroundTruth( r{2} , categoryList);
+    disp('Size GroundTruth:')
+    size(gt)
     
     % evaluation
     evaluationTableHierar{iRun} = {gt, predictions};
