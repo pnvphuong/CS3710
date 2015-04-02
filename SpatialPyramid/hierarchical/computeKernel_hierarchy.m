@@ -7,8 +7,8 @@ function map_kernels = computeKernel_hierarchy( map_trainIDList_testIDList , fea
         val = map_trainIDList_testIDList(k);
         trainIDList = val{1};
         testIDList = val{2};
-        [K, KK, trainID, testID] = computeKernel(trainIDList, testIDList, featureMap);
-        val = {{K, KK, trainID, testID}};
+        [K, KK, trainID, testID, trainFeatureTable] = computeKernel(trainIDList, testIDList, featureMap);
+        val = {{K, KK, trainID, testID, trainFeatureTable}};
         values = [values val];
     end
     

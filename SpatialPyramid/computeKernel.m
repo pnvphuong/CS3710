@@ -1,4 +1,4 @@
-function [K, KK, trainID, testID] = computeKernel(trainIDList, testIDList, featureMap)
+function [K, KK, trainID, testID, trainFeatureTable] = computeKernel(trainIDList, testIDList, featureMap)
 	[trainFeatureTable, trainID] = getFeatureList(trainIDList, featureMap);
 	[testFeatureTable, testID] = getFeatureList(testIDList, featureMap);
 

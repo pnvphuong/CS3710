@@ -1,5 +1,15 @@
 % map_predictions = predictClassifierHierarchy( map_kernels, refined_IDList, map_learned_models)
-function map_predictions = predictClassifierHierarchy( map_kernels, map_trainIDList_testIDList, map_learned_models)
+function map_predictions = predictClassifierHierarchy(root_name, map_kernels, map_trainIDList_testIDList, map_learned_models)
+%% newer version
+% root
+classifierList = map_learned_models(root_name);
+val_train_test = map_trainIDList_testIDList(root_name);
+testIDList = val_train_test{2};
+
+
+
+
+%% older version
     values = {};
     ks = keys(map_kernels);
     for i=1:length(map_kernels)
@@ -13,6 +23,7 @@ function map_predictions = predictClassifierHierarchy( map_kernels, map_trainIDL
         testIDList = val_train_test{2};
         
         T = predictLeafNodeClassifierList(KK, testID, testIDList, classifierList);
+        T
         values = [values {T}];
     end
     
