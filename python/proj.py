@@ -152,7 +152,7 @@ def get_common_root(h, root_name, count_v, num_words):
     counter_child = Counter(leaves_child)
 
     if len(counter_child) < num_words:
-        return root_name # new common root
+        return [h, root_name]# new common root
     else:
         # Access child
         max_child = childs[max_ix]
@@ -164,6 +164,7 @@ def get_common_root(h, root_name, count_v, num_words):
                 counter_child = Counter(leaves_child)
                 count_new = decrease_counts(count_new, counter_child)
                 del h[childs[i]]
+        del h[root_name]
         return get_common_root(h, max_child, count_new, num_words)
 
 # reading data
@@ -190,8 +191,8 @@ one_tree = reduce(merge_trees, combined_trees) # merge in only one tree
 # print "max num_word_synsets: ", np.max(num_word_synsets)
 # # print "word_trees: ", word_trees
 #
-print "one_tree: "
-pprint(one_tree)
+# print "one_tree: "
+# pprint(one_tree)
 #
 # # t = map2tree(one_tree, 'entity.n.01')
 # # print t
@@ -205,4 +206,10 @@ print "count_map: ", count_map
 
 # get_common_root(one_tree, 'vertebrate.n.01', count_map)
 
-print 'commom root: ', get_common_root(one_tree, 'entity.n.01', count_map, len(words))
+cr = get_common_root(one_tree, 'entity.n.01', count_map, len(words))
+h = cr[0]
+root_name = cr[1]
+print 'commom root: ',root_name
+
+print "tree: "
+pprint(h)
