@@ -5,6 +5,7 @@ from nltk.corpus import wordnet as wn
 from nltk.tree import *
 from nltk.draw import tree
 from pprint import pprint
+import numpy as np
 
 # lambda functions
 hyp = lambda s: s.hypernyms()
@@ -116,7 +117,7 @@ def map2tree(d, name_synset):
             child = childs[i]
             t = map2tree(d, child)
             vl.append(t)
-        return Tree(name_synset, vl)
+        return Tree(name_synset + ' [ ' + str(childs[0]) + ' ]', vl)
 
 # reading data
 data_file = 'leaves.txt';
@@ -130,17 +131,22 @@ for row in csv_f:
 
 words = v[1:]
 word_synsets = map(get_synset, words) # extract synsets
+num_word_synsets = map(len, word_synsets) # number of word synsets
 word_trees = map(get_trees_v2, word_synsets, range(len(words))) # get maps [top - down]
 combined_trees = map(get_one_tree, word_trees) # create one tree per word
 one_tree = reduce(merge_trees, combined_trees) # merge in only one tree
 
 # print "words: ", words, len(words)
-# print "word_synsets: ", word_synsets, len(word_synsets)
+print "num_word_synsets: ", num_word_synsets, len(num_word_synsets)
+print "average num_word_synsets: ", np.mean(num_word_synsets)
+print "std num_word_synsets: ", np.std(num_word_synsets)
+print "max num_word_synsets: ", np.max(num_word_synsets)
 # print "word_trees: ", word_trees
 
-print "one_tree: "
-pprint(one_tree)
+# print "one_tree: "
+# pprint(one_tree)
 
 t = map2tree(one_tree, 'entity.n.01')
 print t
 t.draw()
+#
