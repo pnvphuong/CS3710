@@ -129,6 +129,7 @@ def merge_trees(d1, d2):
             ds[k] = d1[k] # add a new node
     return ds
 
+
 # tests
 d = {}
 list2map(r, d)
@@ -150,3 +151,8 @@ ds = merge_trees(d2, db)
 print "ds: ",ds
 pprint(ds)
 pprint(db)
+
+from collections import Counter
+z = ['blue', 'red', 'blue', 'yellow', 'blue', 'red']
+print 'a' in z
+c = Counter(z)

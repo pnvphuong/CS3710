@@ -6,6 +6,7 @@ from nltk.tree import *
 from nltk.draw import tree
 from pprint import pprint
 import numpy as np
+from collections import Counter
 
 # lambda functions
 hyp = lambda s: s.hypernyms()
@@ -119,7 +120,6 @@ def map2tree(d, name_synset):
             vl.append(t)
         return Tree(name_synset + ' [ ' + str(childs[0]) + ' ]', vl)
 
-
 def get_leaves(h, root_name):
     # base case [leaf]
     if h.has_key(root_name) == False:
@@ -132,6 +132,39 @@ def get_leaves(h, root_name):
             leave = get_leaves(h, child)
             v = v + leave
         return v
+
+def decrease_counts(count_v, count_child):
+    count_out = count_v
+    for k in count_child.keys():
+        count_out[k] = count_v[k] - count_child[k]
+    return count_out
+
+
+def get_common_root(h, root_name, count_v, num_words):
+    childs = h[root_name]
+    childs = childs[1:]
+    count_childs = map(lambda x: h[x][0], childs)
+    max_val = max(count_childs)
+    max_ix = count_childs.index(max_val)
+
+    # Access subtree with maximum count
+    leaves_child = get_leaves(h, childs[max_ix])
+    counter_child = Counter(leaves_child)
+
+    if len(counter_child) < num_words:
+        return root_name # new common root
+    else:
+        # Access child
+        max_child = childs[max_ix]
+        count_new = count_v
+        # Delete other childs
+        for i in range(len(childs)):
+            if i != max_ix:
+                leaves_child = get_leaves(h, childs[i])
+                counter_child = Counter(leaves_child)
+                count_new = decrease_counts(count_new, counter_child)
+                del h[childs[i]]
+        return get_common_root(h, max_child, count_new, num_words)
 
 # reading data
 data_file = 'leaves.txt';
@@ -166,7 +199,10 @@ pprint(one_tree)
 
 count_map = dict(zip(words, num_word_synsets))
 
-print count_map
-print count_map.has_key('sss')
+print "count_map: ", count_map
 
-print get_leaves(one_tree, 'vertebrate.n.01') # 'snake.n.05'; 'vertebrate.n.01'
+# print get_leaves(one_tree, 'vertebrate.n.01') # 'snake.n.05'; 'vertebrate.n.01'
+
+# get_common_root(one_tree, 'vertebrate.n.01', count_map)
+
+print 'commom root: ', get_common_root(one_tree, 'entity.n.01', count_map, len(words))
