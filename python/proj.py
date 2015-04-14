@@ -119,6 +119,20 @@ def map2tree(d, name_synset):
             vl.append(t)
         return Tree(name_synset + ' [ ' + str(childs[0]) + ' ]', vl)
 
+
+def get_leaves(h, root_name):
+    # base case [leaf]
+    if h.has_key(root_name) == False:
+        return [root_name]
+    else:
+        childs = h[root_name]
+        childs = childs[1:]
+        v = [];
+        for child in childs:
+            leave = get_leaves(h, child)
+            v = v + leave
+        return v
+
 # reading data
 data_file = 'leaves.txt';
 f = open(data_file)
@@ -137,16 +151,22 @@ combined_trees = map(get_one_tree, word_trees) # create one tree per word
 one_tree = reduce(merge_trees, combined_trees) # merge in only one tree
 
 # print "words: ", words, len(words)
-print "num_word_synsets: ", num_word_synsets, len(num_word_synsets)
-print "average num_word_synsets: ", np.mean(num_word_synsets)
-print "std num_word_synsets: ", np.std(num_word_synsets)
-print "max num_word_synsets: ", np.max(num_word_synsets)
-# print "word_trees: ", word_trees
-
-# print "one_tree: "
-# pprint(one_tree)
-
-t = map2tree(one_tree, 'entity.n.01')
-print t
-t.draw()
+# print "num_word_synsets: ", num_word_synsets, len(num_word_synsets)
+# print "average num_word_synsets: ", np.mean(num_word_synsets)
+# print "std num_word_synsets: ", np.std(num_word_synsets)
+# print "max num_word_synsets: ", np.max(num_word_synsets)
+# # print "word_trees: ", word_trees
 #
+print "one_tree: "
+pprint(one_tree)
+#
+# # t = map2tree(one_tree, 'entity.n.01')
+# # print t
+# # t.draw()
+
+count_map = dict(zip(words, num_word_synsets))
+
+print count_map
+print count_map.has_key('sss')
+
+print get_leaves(one_tree, 'vertebrate.n.01') # 'snake.n.05'; 'vertebrate.n.01'
