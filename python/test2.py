@@ -37,3 +37,6 @@ sentence = Tree('s', [dp1, vp])
 print sentence
 
 sentence.draw()
+
+print range(5)
+print range(1, 5)

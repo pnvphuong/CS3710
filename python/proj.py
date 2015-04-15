@@ -139,7 +139,6 @@ def decrease_counts(count_v, count_child):
         count_out[k] = count_v[k] - count_child[k]
     return count_out
 
-
 def get_common_root(h, root_name, count_v, num_words):
     childs = h[root_name]
     childs = childs[1:]
@@ -166,6 +165,57 @@ def get_common_root(h, root_name, count_v, num_words):
                 del h[childs[i]]
         del h[root_name]
         return get_common_root(h, max_child, count_new, num_words)
+
+def compress_tree(h, root_name):
+    childs = h[root_name]
+    for i in range(1, len(childs)):
+        child = childs[i]
+        print "child: ", child
+
+        if h.has_key(child):
+            print "h[child]: ", h[child]
+            nro_grand_childs = len(h[child]) - 1
+            print nro_grand_childs
+
+            print "child_error: ", child
+            # pprint(h)
+
+            leave_nodes = get_leaves(h, child)
+
+
+            if nro_grand_childs ==1 and len(leave_nodes) == 1 and h[child][1] != leave_nodes[0]:
+                # prune
+                leave_node = leave_nodes
+                print "leave_node: ", leave_node
+                print "\t childs before: ", childs
+
+                childs[i] = leave_node[0] # [0]
+                h[root_name] = childs # point to leaf node
+
+
+                print "\t childs after: ", h[root_name]
+
+                # remove intermediate nodes
+                while h.has_key(child):
+                    child = h[child][1]
+                    del h[child]
+            else:
+                compress_tree(h, child)
+
+def get_deep(h, root_name, leave, depth_count):
+    if h.has_key(root_name):
+        vo = [];
+        childs = h[root_name][1:]
+        for child in childs:
+            v = get_deep(h, child, leave, depth_count + 1)
+            if v != -1:
+                vo = vo + v
+        return vo
+    else:
+        if root_name == leave:
+            return [depth_count]
+        else:
+            return -1
 
 # reading data
 data_file = 'leaves.txt';
@@ -209,7 +259,22 @@ print "count_map: ", count_map
 cr = get_common_root(one_tree, 'entity.n.01', count_map, len(words))
 h = cr[0]
 root_name = cr[1]
-print 'commom root: ',root_name
+print 'common root: ',root_name
 
-print "tree: "
-pprint(h)
+# print "tree: "
+# pprint(h)
+
+# counts for new tree with common root
+leaves = get_leaves(h, root_name)
+print Counter(leaves)
+#
+# t = map2tree(h, root_name)
+# t.draw()
+
+# # Compress Tree
+# compress_tree(h, root_name)
+#
+# t = map2tree(h, root_name)
+# t.draw()
+
+print get_deep(h, root_name, 'greyhound', 0)
