@@ -8,6 +8,7 @@ from pprint import pprint
 import numpy as np
 from collections import Counter
 
+
 # lambda functions
 hyp = lambda s: s.hypernyms()
 get_one_tree = lambda x: reduce(merge_trees, x)
@@ -230,6 +231,23 @@ def get_father(h, root_name, leave, father):
         else:
             return -1
 
+def select_node_meanings(h, root_name, count_vector):
+    d = {};
+    keys = count_vector.keys()
+
+    for k in keys:
+        if count_vector[k] > 1:
+            v_deep = get_deep(h, root_name, k, 0)
+            v_fathers = get_father(h, root_name, k, [])
+
+            # get deepest node
+            max_deep = max(v_deep)
+            max_ix = v_deep.index(max_deep)
+            father = v_fathers[max_ix]
+            d[k] = [max_ix, father]
+    return d
+
+
 # reading data
 data_file = 'leaves.txt';
 f = open(data_file)
@@ -287,33 +305,35 @@ compress_tree(h, root_name)
 leaves = get_leaves(h, root_name)
 print Counter(leaves)
 
-query = 'elk'
-print query, get_deep(h, root_name, query, 0)
-print query, get_father(h, root_name, query, [])
+print select_node_meanings(h, root_name, Counter(leaves))
 
-query = 'greyhound'
-print query, get_deep(h, root_name, query, 0)
-print query, get_father(h, root_name, query, [])
+# query = 'elk'
+# print query, get_deep(h, root_name, query, 0)
+# print query, get_father(h, root_name, query, [])
+#
+# query = 'greyhound'
+# print query, get_deep(h, root_name, query, 0)
+# print query, get_father(h, root_name, query, [])
+#
+# query = 'dolphin'
+# print query, get_deep(h, root_name, query, 0)
+# print query, get_father(h, root_name, query, [])
+#
+# query = 'crab'
+# print query, get_deep(h, root_name, query, 0)
+# print query, get_father(h, root_name, query, [])
+#
+# query = 'elephant'
+# print query, get_deep(h, root_name, query, 0)
+# print query, get_father(h, root_name, query, [])
+#
+# query = 'horseshoe-crab'
+# print query, get_deep(h, root_name, query, 0)
+# print query, get_father(h, root_name, query, [])
+#
+# query = 'dog'
+# print query, get_deep(h, root_name, query, 0)
+# print query, get_father(h, root_name, query, [])
 
-query = 'dolphin'
-print query, get_deep(h, root_name, query, 0)
-print query, get_father(h, root_name, query, [])
-
-query = 'crab'
-print query, get_deep(h, root_name, query, 0)
-print query, get_father(h, root_name, query, [])
-
-query = 'elephant'
-print query, get_deep(h, root_name, query, 0)
-print query, get_father(h, root_name, query, [])
-
-query = 'horseshoe-crab'
-print query, get_deep(h, root_name, query, 0)
-print query, get_father(h, root_name, query, [])
-
-query = 'dog'
-print query, get_deep(h, root_name, query, 0)
-print query, get_father(h, root_name, query, [])
-
-t = map2tree(h, root_name)
-t.draw()
+# t = map2tree(h, root_name)
+# t.draw()
