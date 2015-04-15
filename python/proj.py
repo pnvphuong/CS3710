@@ -247,6 +247,80 @@ def select_node_meanings(h, root_name, count_vector):
             d[k] = [max_ix, father]
     return d
 
+def refine_tree(h, root_name, s):
+    if h.has_key(root_name): # no leave node
+        childs = h[root_name]
+        i = 1
+        while i < len(childs):
+            child = childs[i]
+            if child in s:
+                del childs[i]
+                i -= 1
+                h[root_name] = childs
+            else:
+                s.add(child)
+                refine_tree(h, child, s)
+            i += 1
+
+# Trying to incorporate deep information, TODO: not working
+def refine_tree2(h, root_name, conflict_nodes, d):
+
+    if h.has_key(root_name): # no leave node
+        childs = h[root_name]
+
+        i = 0
+        while i < len(childs):
+        #for i in range(len(childs) - 1, 0, -1):
+            child = childs[i]
+            if child in conflict_nodes.keys():
+                ix = conflict_nodes[child][0]
+                father = conflict_nodes[child][1]
+
+                if child in d.keys():
+                    if ix != d[child]:
+                        del childs[i]
+                        i = i -1
+                        h[root_name] = childs
+                    else:
+                        d[child] = d[child] + 1
+                        refine_tree2(h, child, conflict_nodes, d)
+                else:
+                    if ix != 0:
+                        del childs[i]
+                        i = i -1
+                        h[root_name] = childs
+                    else:
+                        d[child] = 1 # first ocurrence
+                        refine_tree2(h, child, conflict_nodes, d)
+            else:
+                refine_tree2(h, child, conflict_nodes, d)
+            i = i + 1
+
+# trying to add grand_childs information, TODO: not working
+def refine_tree3(h, root_name, conflict_nodes, s):
+    if h.has_key(root_name): # no leave node
+        childs = h[root_name]
+        i = 1
+        while i < len(childs):
+            child = childs[i]
+            if h.has_key(child):
+                grand_childs = h[child]
+
+                for j in range(1, len(grand_childs)):
+                    grand_child = grand_childs[j]
+                    if grand_child in conflict_nodes.keys():
+                        if grand_child in s:
+                            print "delete conflict"
+                            del childs[i]
+                            i = i - 1
+                            h[root_name] = childs
+                        else:
+                            s.add(grand_child)
+                            refine_tree(h, child, conflict_nodes, s)
+                    else:
+                        refine_tree(h, child, conflict_nodes, s)
+            i = i + 1
+
 
 # reading data
 data_file = 'leaves.txt';
@@ -292,48 +366,23 @@ h = cr[0]
 root_name = cr[1]
 print 'common root: ',root_name
 
-# print "tree: "
-# pprint(h)
-
-# t = map2tree(h, root_name)
-# t.draw()
-
 # Compress Tree
-compress_tree(h, root_name)
+compress_tree(h, root_name) # to avoid trees with only 1 child recursively
 
 # counts for new tree with common root
 leaves = get_leaves(h, root_name)
-print Counter(leaves)
+print "Counts before unambiguous nodes: \n", Counter(leaves)
 
-print select_node_meanings(h, root_name, Counter(leaves))
+# conflict_nodes = select_node_meanings(h, root_name, Counter(leaves))
+# print conflict_nodes
 
-# query = 'elk'
-# print query, get_deep(h, root_name, query, 0)
-# print query, get_father(h, root_name, query, [])
-#
-# query = 'greyhound'
-# print query, get_deep(h, root_name, query, 0)
-# print query, get_father(h, root_name, query, [])
-#
-# query = 'dolphin'
-# print query, get_deep(h, root_name, query, 0)
-# print query, get_father(h, root_name, query, [])
-#
-# query = 'crab'
-# print query, get_deep(h, root_name, query, 0)
-# print query, get_father(h, root_name, query, [])
-#
-# query = 'elephant'
-# print query, get_deep(h, root_name, query, 0)
-# print query, get_father(h, root_name, query, [])
-#
-# query = 'horseshoe-crab'
-# print query, get_deep(h, root_name, query, 0)
-# print query, get_father(h, root_name, query, [])
-#
-# query = 'dog'
-# print query, get_deep(h, root_name, query, 0)
-# print query, get_father(h, root_name, query, [])
+# refine tree to erase unambiguous nodes
+s = set()
+refine_tree(h, root_name, s)
 
-# t = map2tree(h, root_name)
-# t.draw()
+
+leaves = get_leaves(h, root_name)
+print "Counts after unambiguous nodes: \n", Counter(leaves)
+
+t = map2tree(h, root_name)
+t.draw()
