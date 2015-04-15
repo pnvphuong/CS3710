@@ -217,6 +217,21 @@ def get_deep(h, root_name, leave, depth_count):
         else:
             return -1
 
+def get_father(h, root_name, leave, father):
+    if h.has_key(root_name):
+        vo = [];
+        childs = h[root_name][1:]
+        for child in childs:
+            v = get_father(h, child, leave, root_name)
+            if v != -1:
+                vo = vo + v
+        return vo
+    else:
+        if root_name == leave:
+            return [father]
+        else:
+            return -1
+
 # reading data
 data_file = 'leaves.txt';
 f = open(data_file)
@@ -277,4 +292,5 @@ print Counter(leaves)
 # t = map2tree(h, root_name)
 # t.draw()
 
-print get_deep(h, root_name, 'greyhound', 0)
+print get_deep(h, root_name, 'elk', 0)
+print get_father(h, root_name, 'elk', [])
