@@ -287,11 +287,33 @@ compress_tree(h, root_name)
 leaves = get_leaves(h, root_name)
 print Counter(leaves)
 
+query = 'elk'
+print query, get_deep(h, root_name, query, 0)
+print query, get_father(h, root_name, query, [])
+
+query = 'greyhound'
+print query, get_deep(h, root_name, query, 0)
+print query, get_father(h, root_name, query, [])
+
+query = 'dolphin'
+print query, get_deep(h, root_name, query, 0)
+print query, get_father(h, root_name, query, [])
+
+query = 'crab'
+print query, get_deep(h, root_name, query, 0)
+print query, get_father(h, root_name, query, [])
+
+query = 'elephant'
+print query, get_deep(h, root_name, query, 0)
+print query, get_father(h, root_name, query, [])
+
+query = 'horseshoe-crab'
+print query, get_deep(h, root_name, query, 0)
+print query, get_father(h, root_name, query, [])
+
+query = 'dog'
+print query, get_deep(h, root_name, query, 0)
+print query, get_father(h, root_name, query, [])
+
 t = map2tree(h, root_name)
 t.draw()
-
-print get_deep(h, root_name, 'elk', 0)
-print get_father(h, root_name, 'elk', [])
-
-print get_deep(h, root_name, 'greyhound', 0)
-print get_father(h, root_name, 'greyhound', [])
