@@ -120,6 +120,14 @@ def map2tree(d, name_synset):
             vl.append(t)
         return Tree(name_synset + ' [ ' + str(childs[0]) + ' ]', vl)
 
+def get_node_bifurcation(h, root_name): # descendent with more than 1 child
+    # base case [leaf]
+    childs = h[root_name][1:]
+    if len(childs) > 1:
+        return root_name
+    else:
+        return get_node_bifurcation(h, childs[0])
+
 def get_leaves(h, root_name):
     # base case [leaf]
     if h.has_key(root_name) == False:
@@ -170,35 +178,25 @@ def compress_tree(h, root_name):
     childs = h[root_name]
     for i in range(1, len(childs)):
         child = childs[i]
-        print "child: ", child
-
         if h.has_key(child):
-            print "h[child]: ", h[child]
             nro_grand_childs = len(h[child]) - 1
-            print nro_grand_childs
-
-            print "child_error: ", child
-            # pprint(h)
-
             leave_nodes = get_leaves(h, child)
 
-
-            if nro_grand_childs ==1 and len(leave_nodes) == 1 and h[child][1] != leave_nodes[0]:
+            if nro_grand_childs ==1 and len(leave_nodes) == 1: # leaf node
                 # prune
                 leave_node = leave_nodes
-                print "leave_node: ", leave_node
-                print "\t childs before: ", childs
-
                 childs[i] = leave_node[0] # [0]
                 h[root_name] = childs # point to leaf node
-
-
-                print "\t childs after: ", h[root_name]
+            elif nro_grand_childs == 1: # For intermediate nodes
+                node_bif = get_node_bifurcation(h, child)
+                childs[i] = node_bif # TODO: later update with the less depth node, should need prune step later
+                h[root_name] = childs
+                compress_tree(h, node_bif)
 
                 # remove intermediate nodes
-                while h.has_key(child):
-                    child = h[child][1]
-                    del h[child]
+                # while h.has_key(child):
+                #     child = h[child][1]
+                #     del h[child]
             else:
                 compress_tree(h, child)
 
@@ -279,18 +277,21 @@ print 'common root: ',root_name
 # print "tree: "
 # pprint(h)
 
+# t = map2tree(h, root_name)
+# t.draw()
+
+# Compress Tree
+compress_tree(h, root_name)
+
 # counts for new tree with common root
 leaves = get_leaves(h, root_name)
 print Counter(leaves)
-#
-# t = map2tree(h, root_name)
-# t.draw()
 
-# # Compress Tree
-# compress_tree(h, root_name)
-#
-# t = map2tree(h, root_name)
-# t.draw()
+t = map2tree(h, root_name)
+t.draw()
 
 print get_deep(h, root_name, 'elk', 0)
 print get_father(h, root_name, 'elk', [])
+
+print get_deep(h, root_name, 'greyhound', 0)
+print get_father(h, root_name, 'greyhound', [])
