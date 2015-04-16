@@ -262,6 +262,13 @@ def refine_tree(h, root_name, s):
                 refine_tree(h, child, s)
             i += 1
 
+def remove_dead_nodes(h, s):
+    ks = h.keys()
+
+    for k in ks:
+        if not(k in s):
+            del h[k]
+
 # Trying to incorporate deep information, TODO: not working
 def refine_tree2(h, root_name, conflict_nodes, d):
 
@@ -378,11 +385,20 @@ print "Counts before unambiguous nodes: \n", Counter(leaves)
 
 # refine tree to erase unambiguous nodes
 s = set()
+s.add('animal.n.01')
 refine_tree(h, root_name, s)
-
+print "set: ", s
+remove_dead_nodes(h, s)
 
 leaves = get_leaves(h, root_name)
 print "Counts after unambiguous nodes: \n", Counter(leaves)
 
 t = map2tree(h, root_name)
 t.draw()
+
+# saving hierarchy
+import json
+x = json.dumps(h)
+
+f = open('wordnet_hierarchy.txt', 'w')
+f.write(x)
