@@ -369,7 +369,7 @@ def get_unique_synset(leaves, fathers, depths):
         el = depths[i]
         max_el = max(el)
         ix_max = el.index(max_el)
-        vus[leave] = father[ix_max]
+        vus[leave] = wn.synset(father[ix_max])
     return vus
 
 
@@ -433,29 +433,8 @@ print "depths: ", depths
 us = get_unique_synset(leave_nodes, parents, depths)
 pprint(us)
 
-# # Compress Tree
-# compress_tree(h, root_name) # to avoid trees with only 1 child recursively
-#
-# # counts for new tree with common root
-# leaves = get_leaves(h, root_name)
-# print "Counts before unambiguous nodes: \n", Counter(leaves)
+# create synset distance matrix
+all_synsets = us.values();
+f_sim = lambda x, y: x.path_similarity(y)
 
-# # refine tree to erase unambiguous nodes
-# s = set()
-# s.add('animal.n.01')
-# refine_tree(h, root_name, s)
-# print "set: ", s
-# remove_dead_nodes(h, s)
-#
-# vdl = get_dead_leaves(h)
-# print 'dead leaves: ', vdl
-# remove_dead_leaves(h, vdl)
-#
-# compress_tree(h, root_name) # compress tree one more time, could be that removing dead leaves change structure
-#
-# leaves = get_leaves(h, root_name)
-# print "Counts after unambiguous nodes: \n", Counter(leaves)
-
-# pprint(h)
-t = map2tree(h, root_name)
-t.draw()
+dm = pdist(all_synsets, f_sim)
