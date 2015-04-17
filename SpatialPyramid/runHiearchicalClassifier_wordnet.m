@@ -5,7 +5,7 @@ addpath(genpath('../data'));
 addpath(genpath('hierarchical'));
 
 % load wordnet hierarchy
-file_hierarchy = 'wordnet_hierarchy.txt';
+file_hierarchy = '../data/wordnet_hierarchy.txt';
 h_wordnet = import_hierarchy(file_hierarchy);
 load('caltechTaxonomy.mat');
 mn = get_map_names(caltechTaxonomyMap);
@@ -19,16 +19,13 @@ out_hierar = 'evaluationTableHierar_wordnet.mat';
 ks = keys(h_wordnet);
 
 for i = 1: length(ks)
-    k = ks{i}
+    k = ks{i};
     childs = h_wordnet(k); % cell array
     for j = 1 : length(childs)       
         val = childs{j};
         if isempty(findstr(val, '.n.')) % not from wordnet
-            childs{j} = mn(val);
+            h_wordnet(val) = mn(val); % add a new node
         end
-    end
-    if size(childs, 2) == 0
-        remove(h_wordnet, k);
     end
 end
 
@@ -40,7 +37,7 @@ featureMap = dataMap;
 baseFolder = '/afs/cs.pitt.edu/usr0/nineil/private/datasets/256_ObjectCategories'; % Nils Server
 % baseFolder = 'E:\nineil\phd\general_datasets\256_ObjectCategories'; % Nils PC Lab
 trainTestRatio = 0.3;
-epoch = 1; % 40
+epoch = 40; % 40
 
 tax = h_wordnet;
 
@@ -70,22 +67,22 @@ for iRun = 1 : epoch
     
 	% predict
 	fprintf('\tevaluate classifier list\n');
-    r = refined_IDList('animal');
-    predictions = predictClassifierHierarchy('animal', map_kernels, r{2}, map_learned_models, featureMap, tax);
+    r = refined_IDList(root_name);
+    predictions = predictClassifierHierarchy(root_name, map_kernels, r{2}, map_learned_models, featureMap, tax);
     % map_predictions = predictClassifierHierarchy( map_kernels, refined_IDList, map_learned_models);
 	% evaluationTable{iRun} = predictLeafNodeClassifierList(KK, testID, testIDList, classifierList);
-    disp('Size Predictions:')
-    size(predictions)
+%     disp('Size Predictions:')
+%     size(predictions)
     
     % get ground truths,
     gt = getGroundTruth_manual(r{2});
-    disp('Size GroundTruth:')
-    size(gt)
+%     disp('Size GroundTruth:')
+%     size(gt)
     
     % evaluation
     evaluationTableHierar{iRun} = {gt, predictions};
     eval = classperf(gt, predictions);
-	accList(iRun) = eval.CorrectRate;	
+	accList(iRun) = eval.CorrectRate;
 end
 save(['../data/' out_hierar], 'evaluationTableHierar');
 save(['../data/' out_file], 'accList');
