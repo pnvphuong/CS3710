@@ -440,6 +440,6 @@ t.draw()
 import json
 x = json.dumps(h)
 
-file_hierar = '../SpatialPyramid/data/wordnet_hierarchy.txt';
+file_hierar = '../data/wordnet_hierarchy.txt';
 f = open(file_hierar, 'w')
 f.write(x)
