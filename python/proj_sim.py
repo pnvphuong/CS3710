@@ -1,13 +1,13 @@
 __author__ = 'nineil'
 
 import csv
+import json
 from nltk.corpus import wordnet as wn
 from nltk.tree import *
 from nltk.draw import tree
 from pprint import pprint
 import numpy as np
 from collections import Counter
-
 
 # lambda functions
 hyp = lambda s: s.hypernyms()
@@ -372,6 +372,17 @@ def get_unique_synset(leaves, fathers, depths):
         vus[leave] = wn.synset(father[ix_max])
     return vus
 
+def create_distance_matrix(vector_data,  func_d):
+    n = len(vector_data)
+    v = np.empty([n, n])
+    for i in range(n):
+        di = vector_data[i]
+        for j in range(n):
+            dj = vector_data[j]
+            d = func_d(di, dj)
+            v[i,j] = d
+    return v
+
 
 
 
@@ -435,6 +446,35 @@ pprint(us)
 
 # create synset distance matrix
 all_synsets = us.values();
+# name_synsets = map(lambda x: str(x.name()), us.keys())
 f_sim = lambda x, y: x.path_similarity(y)
 
-dm = pdist(all_synsets, f_sim)
+dm = create_distance_matrix(all_synsets,  f_sim)
+
+print 'type dm: ', type(dm)
+print 'len dm: ', dm.shape
+# print 'dm: ', dm
+
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
+
+dm = json.dumps(dm, cls=SetEncoder)
+name_synsets = json.dumps(us.keys())
+
+print "mat: ", dm
+print "name synsets: ", name_synsets
+
+file_hierar = '../data/sim_hierarchy.txt';
+leaves_hierar = '../data/leaves_sim_hierarchy.txt';
+
+f = open(file_hierar, 'w')
+f.write(dm)
+f.close()
+
+f = open(leaves_hierar, 'w')
+f.write(name_synsets)
+f.close()
+

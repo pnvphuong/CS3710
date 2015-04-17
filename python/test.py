@@ -158,21 +158,33 @@ __author__ = 'nineil'
 # c = Counter(z)
 
 
-# ************* TEST4
-import json
+# # ************* TEST4
+# import json
+#
+# dict = {"hello": "world"}
+# x = json.dumps(dict)
+#
+# f = open('test.txt', 'w')
+# f.write(x)
+#
+#
+# childs = [1, 'ss', 'ww'];
+# try:
+#     print childs.index('sww')
+# except:
+#     print "not found"
+#
+# del childs[0]
+# print childs
 
-dict = {"hello": "world"}
-x = json.dumps(dict)
+# **************** TEST 5
+# import numpy as np
+from numpy import array
+from scipy.spatial.distance import pdist
 
-f = open('test.txt', 'w')
-f.write(x)
+x = array([[0,10],[10,10],[20,20], [30,30]])
+y = pdist(x)
 
+print "x: ", x
+print "pdist: ", y
 
-childs = [1, 'ss', 'ww'];
-try:
-    print childs.index('sww')
-except:
-    print "not found"
-
-del childs[0]
-print childs
