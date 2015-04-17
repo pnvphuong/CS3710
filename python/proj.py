@@ -393,6 +393,7 @@ remove_dead_nodes(h, s)
 leaves = get_leaves(h, root_name)
 print "Counts after unambiguous nodes: \n", Counter(leaves)
 
+pprint(h)
 t = map2tree(h, root_name)
 t.draw()
 

@@ -4,7 +4,33 @@ addpath(genpath('taxonomy')); % add taxonomy
 addpath(genpath('../data'));
 addpath(genpath('hierarchical'));
 
+% load wordnet hierarchy
+file_hierarchy = 'wordnet_hierarchy.txt';
+h_wordnet = import_hierarchy(file_hierarchy);
 load('caltechTaxonomy.mat');
+mn = get_map_names(caltechTaxonomyMap);
+root_name = 'animal.n.01';
+out_file = 'accList_wordnet.mat';
+out_hierar = 'evaluationTableHierar_wordnet.mat';
+
+% update leave nodes with names of the caltech hierarchy
+% and erase leave nodes that are don't have any child related to the
+% taxonomy
+ks = keys(h_wordnet);
+
+for i = 1: length(ks)
+    k = ks{i}
+    childs = h_wordnet(k); % cell array
+    for j = 1 : length(childs)       
+        val = childs{j};
+        if isempty(findstr(val, '.n.')) % not from wordnet
+            childs{j} = mn(val);
+        end
+    end
+    if size(childs, 2) == 0
+        remove(h_wordnet, k);
+    end
+end
 
 % use map object
 load('feat_map.mat');
@@ -14,27 +40,9 @@ featureMap = dataMap;
 baseFolder = '/afs/cs.pitt.edu/usr0/nineil/private/datasets/256_ObjectCategories'; % Nils Server
 % baseFolder = 'E:\nineil\phd\general_datasets\256_ObjectCategories'; % Nils PC Lab
 trainTestRatio = 0.3;
-epoch = 40;
+epoch = 1; % 40
 
-% full list of leaf node in the Animal tree
-categoryList = {'ibis', 'hawksbill', 'hummingbird', 'cormorant', 'duck', ...
-    'goose', 'ostrich', 'owl', 'penguin', 'swan', ...
-    'bat', 'bear', 'camel', 'chimp', 'dog', 'elephant', ...
-    'elk', 'frog', 'giraffe', 'goat', 'gorilla', ...
-    'horse', 'iguana', 'kangaroo', 'llama', ...
-    'leopards', 'porcupine', 'raccoon', 'skunk', ...
-    'snake', 'snail', 'zebra', 'greyhound', 'toad', ...
-    'horseshoe-crab', 'crab', 'conch', 'dolphin', ...
-    'goldfish', 'killer-whale', 'mussels', 'octopus', 'starfish'};
-
-% % Toy taxonomy
-% keySet =   {'animal', 'air', 'land', 'ibis', 'hawksbill', 'bat', 'bear'};
-% valueSet = {{'air', 'land'}, {'ibis', 'hawksbill'}, {'bat', 'bear'}, ...
-%             '114.ibis-101', '100.hawksbill-101', '007.bat', '009.bear'};
-% tax2 = containers.Map(keySet,valueSet);
-
-% tax = tax2;
-tax = caltechTaxonomyMap;
+tax = h_wordnet;
 
 evaluationTableHierar = cell(1,epoch);
 accList = zeros(1, epoch);
@@ -46,7 +54,7 @@ for iRun = 1 : epoch
     
 	% extract train, test set
 	fprintf('\textract train, test sets\n');
-    map_IDList = extractTrainTestList_hierarchy('animal', tax, trainTestRatio, baseFolder, '   ');
+    map_IDList = extractTrainTestList_hierarchy(root_name, tax, trainTestRatio, baseFolder, '   ');
     
     % refine hierarchy
     fprintf('\trefine hierarchy\n');
@@ -77,8 +85,8 @@ for iRun = 1 : epoch
     % evaluation
     evaluationTableHierar{iRun} = {gt, predictions};
     eval = classperf(gt, predictions);
-	accList(iRun) = eval.CorrectRate;
-	save('../data/evaluationTableHierar.mat', 'evaluationTableHierar');
+	accList(iRun) = eval.CorrectRate;	
 end
-save('../data/accList_hierar.mat', 'accList');
+save(['../data/' out_hierar], 'evaluationTableHierar');
+save(['../data/' out_file], 'accList');
 disp(sprintf('Avg acc = %f', sum(accList) / epoch))
