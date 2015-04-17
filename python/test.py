@@ -166,3 +166,13 @@ x = json.dumps(dict)
 
 f = open('test.txt', 'w')
 f.write(x)
+
+
+childs = [1, 'ss', 'ww'];
+try:
+    print childs.index('sww')
+except:
+    print "not found"
+
+del childs[0]
+print childs
