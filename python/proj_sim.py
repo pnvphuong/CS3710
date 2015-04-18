@@ -372,7 +372,7 @@ def get_unique_synset(leaves, fathers, depths):
         vus[leave] = wn.synset(father[ix_max])
     return vus
 
-def create_distance_matrix(vector_data,  func_d):
+def create_sim_matrix(vector_data,  func_d):
     n = len(vector_data)
     v = np.empty([n, n])
     for i in range(n):
@@ -383,6 +383,17 @@ def create_distance_matrix(vector_data,  func_d):
             v[i,j] = d
     return v
 
+def dm2vect(dm):
+    (nr, nc) = dm.shape
+    #superior diagonal
+    m = np.triu(dm, k = 1)
+    v = m.ravel()
+
+    # diagonal
+    v = v[v > 0]
+    v = 1 - v # convert similarity to distance
+
+    return v
 
 
 
@@ -447,9 +458,10 @@ pprint(us)
 # create synset distance matrix
 all_synsets = us.values();
 # name_synsets = map(lambda x: str(x.name()), us.keys())
-f_sim = lambda x, y: x.path_similarity(y)
+f_sim = lambda x, y: x.path_similarity(y) # 1 means are the same object
 
-dm = create_distance_matrix(all_synsets,  f_sim)
+dm = create_sim_matrix(all_synsets,  f_sim)
+distance_vector = dm2vect(dm)
 
 print 'type dm: ', type(dm)
 print 'len dm: ', dm.shape
@@ -464,14 +476,14 @@ class SetEncoder(json.JSONEncoder):
 dm = json.dumps(dm, cls=SetEncoder)
 name_synsets = json.dumps(us.keys())
 
-print "mat: ", dm
+print "distance vector: ", len(distance_vector), distance_vector
 print "name synsets: ", name_synsets
 
-file_hierar = '../data/sim_hierarchy.txt';
-leaves_hierar = '../data/leaves_sim_hierarchy.txt';
+file_hierar = '../data/distances_hierarchy.txt';
+leaves_hierar = '../data/leaves_hierarchy.txt';
 
 f = open(file_hierar, 'w')
-f.write(dm)
+f.write(distance_vector)
 f.close()
 
 f = open(leaves_hierar, 'w')

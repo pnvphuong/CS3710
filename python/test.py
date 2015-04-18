@@ -177,14 +177,18 @@ __author__ = 'nineil'
 # del childs[0]
 # print childs
 
-# **************** TEST 5
-# import numpy as np
-from numpy import array
-from scipy.spatial.distance import pdist
+# # **************** TEST 5
+# # import numpy as np
+# from numpy import array
+# from scipy.spatial.distance import pdist
+#
+# x = array([[0,10],[10,10],[20,20], [30,30]])
+# y = pdist(x)
+#
+# print "x: ", x
+# print "pdist: ", y
 
-x = array([[0,10],[10,10],[20,20], [30,30]])
-y = pdist(x)
+import numpy as np
 
-print "x: ", x
-print "pdist: ", y
-
+print np.tril([[1,2,3],[4,5,6],[7,8,9]])
+print np.triu([[1,2,3],[4,5,6],[7,8,9]], k =1)
