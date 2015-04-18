@@ -27,11 +27,11 @@ categoryList = {'ibis', 'hawksbill', 'hummingbird', 'cormorant', 'duck', ...
     'horseshoe-crab', 'crab', 'conch', 'dolphin', ...
     'goldfish', 'killer-whale', 'mussels', 'octopus', 'starfish'};
 
-% Toy taxonomy
-keySet =   {'animal', 'air', 'land', 'ibis', 'hawksbill', 'bat', 'bear'};
-valueSet = {{'air', 'land'}, {'ibis', 'hawksbill'}, {'bat', 'bear'}, ...
-            '114.ibis-101', '100.hawksbill-101', '007.bat', '009.bear'};
-tax2 = containers.Map(keySet,valueSet);
+% % Toy taxonomy
+% keySet =   {'animal', 'air', 'land', 'ibis', 'hawksbill', 'bat', 'bear'};
+% valueSet = {{'air', 'land'}, {'ibis', 'hawksbill'}, {'bat', 'bear'}, ...
+%             '114.ibis-101', '100.hawksbill-101', '007.bat', '009.bear'};
+% tax2 = containers.Map(keySet,valueSet);
 
 % tax = tax2;
 tax = caltechTaxonomyMap;
@@ -80,5 +80,5 @@ for iRun = 1 : epoch
 	accList(iRun) = eval.CorrectRate;
 	save('../data/evaluationTableHierar.mat', 'evaluationTableHierar');
 end
-save('../data/accList.mat', 'accList');
+save('../data/accList_hierar.mat', 'accList');
 disp(sprintf('Avg acc = %f', sum(accList) / epoch))

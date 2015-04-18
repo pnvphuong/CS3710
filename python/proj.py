@@ -262,6 +262,46 @@ def refine_tree(h, root_name, s):
                 refine_tree(h, child, s)
             i += 1
 
+def remove_dead_nodes(h, s):
+    ks = h.keys()
+
+    for k in ks:
+        if not(k in s):
+            del h[k]
+
+def get_dead_leaves(h):
+    ks = h.keys()
+    vdl = []
+
+    for k in ks:
+        childs = h[k]
+        if len(childs) == 1:
+            vdl.append(k)
+    return vdl
+
+def remove_dead_leave(h, dl):
+    ks = h.keys()
+
+    for k in ks:
+
+        # remove from childs
+        childs = h[k]
+        try:
+            ix = childs.index(dl)
+            del childs[ix]
+            h[k] = childs
+        except:
+            print 'element not found!'
+
+        # remove from keys
+        if k == dl:
+            del h[k]
+
+def remove_dead_leaves(h, vdl):
+    for dl in vdl:
+        remove_dead_leave(h, dl);
+
+
 # Trying to incorporate deep information, TODO: not working
 def refine_tree2(h, root_name, conflict_nodes, d):
 
@@ -378,11 +418,28 @@ print "Counts before unambiguous nodes: \n", Counter(leaves)
 
 # refine tree to erase unambiguous nodes
 s = set()
+s.add('animal.n.01')
 refine_tree(h, root_name, s)
+print "set: ", s
+remove_dead_nodes(h, s)
 
+vdl = get_dead_leaves(h)
+print 'dead leaves: ', vdl
+remove_dead_leaves(h, vdl)
+
+compress_tree(h, root_name) # compress tree one more time, could be that removing dead leaves change structure
 
 leaves = get_leaves(h, root_name)
 print "Counts after unambiguous nodes: \n", Counter(leaves)
 
+# pprint(h)
 t = map2tree(h, root_name)
 t.draw()
+
+# saving hierarchy
+import json
+x = json.dumps(h)
+
+file_hierar = '../data/wordnet_hierarchy.txt';
+f = open(file_hierar, 'w')
+f.write(x)
