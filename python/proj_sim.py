@@ -473,7 +473,7 @@ class SetEncoder(json.JSONEncoder):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
 
-dm = json.dumps(dm, cls=SetEncoder)
+distance_vector = json.dumps(distance_vector, cls=SetEncoder)
 name_synsets = json.dumps(us.keys())
 
 print "distance vector: ", len(distance_vector), distance_vector
