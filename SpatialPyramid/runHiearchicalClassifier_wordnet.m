@@ -36,7 +36,7 @@ featureMap = dataMap;
 % baseFolder = 'D:\datasets\256_ObjectCategories'; % Nils PC
 baseFolder = '/afs/cs.pitt.edu/usr0/nineil/private/datasets/256_ObjectCategories'; % Nils Server
 % baseFolder = 'E:\nineil\phd\general_datasets\256_ObjectCategories'; % Nils PC Lab
-trainTestRatio = 0.3;
+  = 0.3;
 epoch = 40; % 40
 
 tax = h_wordnet;
