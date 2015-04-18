@@ -4,27 +4,29 @@ addpath(genpath('taxonomy')); % add taxonomy
 addpath(genpath('../data'));
 addpath(genpath('hierarchical'));
 
-% load wordnet hierarchy
-file_hierarchy = '../data/wordnet_hierarchy.txt';
-h_wordnet = import_hierarchy(file_hierarchy);
+% load sim hierarchy
+dist_file = 'distances_hierarchy.txt';
+leaves_file = 'leaves_hierarchy.txt';
+h_sim = sim2hierar(dist_file, leaves_file);
+
 load('caltechTaxonomy.mat');
 mn = get_map_names(caltechTaxonomyMap);
-root_name = 'animal.n.01';
-out_file = 'accList_wordnet.mat';
-out_hierar = 'evaluationTableHierar_wordnet.mat';
+root_name = '85';
+out_file = 'accList_sim.mat';
+out_hierar = 'evaluationTableHierar_sim.mat';
 
 % update leave nodes with names of the caltech hierarchy
 % and erase leave nodes that are don't have any child related to the
 % taxonomy
-ks = keys(h_wordnet);
+ks = keys(h_sim);
 
 for i = 1: length(ks)
     k = ks{i};
-    childs = h_wordnet(k); % cell array
+    childs = h_sim(k); % cell array
     for j = 1 : length(childs)       
         val = childs{j};
-        if isempty(findstr(val, '.n.')) % not from wordnet
-            h_wordnet(val) = mn(val); % add a new node
+        if all(isstrprop(val, 'digit')) == false % no intermediate node
+            h_sim(val) = mn(val); % add a new node
         end
     end
 end
@@ -36,10 +38,10 @@ featureMap = dataMap;
 % baseFolder = 'D:\datasets\256_ObjectCategories'; % Nils PC
 baseFolder = '/afs/cs.pitt.edu/usr0/nineil/private/datasets/256_ObjectCategories'; % Nils Server
 % baseFolder = 'E:\nineil\phd\general_datasets\256_ObjectCategories'; % Nils PC Lab
-trainTestRatio  = 0.3;
+trainTestRatio = 0.3;
 epoch = 40; % 40
 
-tax = h_wordnet;
+tax = h_sim;
 
 evaluationTableHierar = cell(1,epoch);
 accList = zeros(1, epoch);
