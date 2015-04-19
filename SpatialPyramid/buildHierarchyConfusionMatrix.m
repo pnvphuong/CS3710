@@ -21,8 +21,7 @@ function confusionMatrix = buildHierarchyConfusionMatrix()
     categoryIdx = linspace(1, length(categoryList), length(categoryList));
     categoryMap = containers.Map(categoryList,categoryIdx);
 
-    epoch = 40;
-    epoch = 1;
+    epoch = 10;
     trainTestRatio = 0.3;
 
     N = length(categoryMap);
@@ -47,7 +46,6 @@ function confusionMatrix = buildHierarchyConfusionMatrix()
 %             sprintf('\t\tfilter training data')
             [filterCategoryName, filterTrainID, filterTestID] =...
                 leaveOneCategoryOut(categoryList,trainIDList,testIDList,iLeave);
-            filterCategoryName
             filterTestID = {trainIDList{iLeave}};
             % compute kernel
 %             sprintf('\t\tcompute kernel')
@@ -66,14 +64,14 @@ function confusionMatrix = buildHierarchyConfusionMatrix()
             % update confusion matrix
 %             sprintf('\t\tupdate confusion matrix')
             confusionMatrix = updateConfusionMatrix(predCategoryName,...
-                categoryMap,confusionMatrix,iLeave)
+                categoryMap,confusionMatrix,iLeave);
         end
     end
     % average
     confusionMatrix = confusionMatrix ./ N;
 
     % save result
-    save('../data/hierarchyConfusionMatrix.mat', 'confustionMatrix');
+    save('../data/griffinHierarchyConfusionMatrix.mat', 'confustionMatrix');
 end
 
 % leave one out filtering
