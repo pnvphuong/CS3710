@@ -21,4 +21,11 @@ categoryList = {'ibis', 'hawksbill', 'hummingbird', 'cormorant', 'duck', ...
         'goldfish', 'killer-whale', 'mussels', 'octopus', 'starfish'};
 load('../data/euclideanConfusionMatrix.mat');
 euclideanCategoryNameHierarchy = hierarchyFromMatrix(euclideanConfusionMatrix, categoryList);
+save('../data/euclideanNameHierarchy.mat', 'euclideanCategoryNameHierarchy');
+euclideanString = hierarchy2String(euclideanCategoryNameHierarchy);
+% save hierarchy string
+fileID = fopen('../data/euclideanHierarchyString.txt','w');
+fprintf(fileID,'%s',euclideanString);
+fclose(fileID);
+
 
