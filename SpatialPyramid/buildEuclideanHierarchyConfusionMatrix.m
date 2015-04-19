@@ -32,7 +32,8 @@ function euclideanConfusionMatrix = buildEuclideanHierarchyConfusionMatrix()
             euclideanConfusionMatrix(j,i) = euclideanConfusionMatrix(i,j);
         end
     end
-    euclideanConfusionMatrix = euclideanConfusionMatrix .* -1 % make the most confused items have the highest point
+    euclideanConfusionMatrix = 1 ./ euclideanConfusionMatrix; % make the most confused items have the highest point
+    euclideanConfusionMatrix(logical(eye(size(euclideanConfusionMatrix)))) = 0; % make sure diagonal are not max value
     save('../data/euclideanConfusionMatrix.mat','euclideanConfusionMatrix');
 end
 
