@@ -5,15 +5,15 @@ addpath(genpath('../data'));
 addpath(genpath('hierarchical'));
 
 % load sim hierarchy
-dist_file = 'distances_hierarchy.txt';
-leaves_file = 'leaves_hierarchy.txt';
+dist_file = 'distances_hierarchy_resnik.txt';
+leaves_file = 'leaves_hierarchy_resnik.txt';
 h_sim = sim2hierar(dist_file, leaves_file);
 
 load('caltechTaxonomy.mat');
 mn = get_map_names(caltechTaxonomyMap);
 root_name = '85';
-out_file = 'accList_sim.mat';
-out_hierar = 'evaluationTableHierar_sim.mat';
+out_file = 'accList_sim_resnik.mat';
+out_hierar = 'evaluationTableHierar_sim_resnik.mat';
 
 % update leave nodes with names of the caltech hierarchy
 % and erase leave nodes that are don't have any child related to the
