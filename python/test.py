@@ -190,5 +190,27 @@ __author__ = 'nineil'
 
 import numpy as np
 
-print np.tril([[1,2,3],[4,5,6],[7,8,9]])
-print np.triu([[1,2,3],[4,5,6],[7,8,9]], k =1)
+mat = np.array([[1,2,3],[4,5,6],[7,8,9]])
+print np.tril(mat)
+t2 = np.triu(mat, k =1)
+print t2
+print t2.ravel()
+print t2[t2 > 0]
+
+from nltk.corpus import wordnet_ic
+from nltk.corpus import wordnet as wn
+
+brown_ic = wordnet_ic.ic('ic-brown.dat')
+
+dog = wn.synset('dog.n.01')
+cat = wn.synset('cat.n.01')
+hit = wn.synset('hit.n.01')
+slap = wn.synset('slap.n.01')
+
+print "cat-cat:", cat.res_similarity(cat, brown_ic) # Higher value if the are mos the same
+print "dog-dog:", dog.res_similarity(dog, brown_ic)
+print "hit-hit:", hit.res_similarity(hit, brown_ic)
+print "slap-slap:", slap.res_similarity(slap, brown_ic)
+
+print "cat-dog:", cat.res_similarity(dog, brown_ic)
+print "cat-hit:", cat.res_similarity(hit, brown_ic)

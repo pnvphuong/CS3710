@@ -380,6 +380,7 @@ def create_sim_matrix(vector_data,  func_d):
         for j in range(n):
             dj = vector_data[j]
             d = func_d(di, dj)
+            # print di, dj, d
             v[i,j] = d
     return v
 
@@ -391,8 +392,17 @@ def dm2vect(dm):
 
     # diagonal
     v = v[v > 0]
-    v = 1 - v # convert similarity to distance
 
+
+    # hack for the larges value
+    max_val = v.max()
+    ix_max = v.argmax()
+    v[ix_max] = 15
+
+    v = max(v) - v # convert similarity to distance
+    # print min(v)
+    # print max(v)
+    # print sorted(v, reverse=True)
     return v
 
 
@@ -458,9 +468,14 @@ pprint(us)
 # create synset distance matrix
 all_synsets = us.values();
 # name_synsets = map(lambda x: str(x.name()), us.keys())
-f_sim = lambda x, y: x.path_similarity(y) # 1 means are the same object
+# f_sim = lambda x, y: x.path_similarity(y) # 1 means are the same object
 
-dm = create_sim_matrix(all_synsets,  f_sim)
+# resnik measures
+from nltk.corpus import wordnet_ic
+brown_ic = wordnet_ic.ic('ic-brown.dat')
+f_sim_resnik = lambda x, y: x.res_similarity(y, brown_ic)
+
+dm = create_sim_matrix(all_synsets,  f_sim_resnik)
 distance_vector = dm2vect(dm)
 
 print 'type dm: ', type(dm)
@@ -476,11 +491,11 @@ class SetEncoder(json.JSONEncoder):
 distance_vector_report = json.dumps(distance_vector, cls=SetEncoder)
 name_synsets = json.dumps(us.keys())
 
-print "distance vector: ", len(distance_vector), "--", distance_vector_report
+print "distance vector: ", len(distance_vector), distance_vector_report
 print "name synsets: ", name_synsets
 
-file_hierar = '../data/distances_hierarchy.txt';
-leaves_hierar = '../data/leaves_hierarchy.txt';
+file_hierar = '../data/distances_hierarchy_resnik.txt';
+leaves_hierar = '../data/leaves_hierarchy_resnik.txt';
 
 f = open(file_hierar, 'w')
 f.write(distance_vector_report)
@@ -489,4 +504,3 @@ f.close()
 f = open(leaves_hierar, 'w')
 f.write(name_synsets)
 f.close()
-
