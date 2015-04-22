@@ -19,7 +19,8 @@ dists = cellfun(@str2num, str_dists);
 
 % hierarchical clustering
 z = linkage(dists, 'average');
-% d = dendrogram(z, length(nodes),'Labels', nodes,'Orientation','left'); % function usually acepts until 30 leaves, add second parameter to avoid this
+d = dendrogram(z, length(nodes),'Labels', nodes,'Orientation','left'); % function usually acepts until 30 leaves, add second parameter to avoid this
+% xlim([0.65, 0.95])
 
 % save hierarchy in a map structure
 h_map = containers.Map();
